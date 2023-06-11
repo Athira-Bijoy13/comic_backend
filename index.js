@@ -7,7 +7,6 @@ const gTTS = require('gtts');
 var player = require('play-sound')(opts = {})
 const { spawnSync } = require('child_process');
 const sound = require('sound-play');
-const sharp = require('sharp');
 const { log } = require('console');
 const fs = require('fs')
 const app = express();
