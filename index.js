@@ -79,14 +79,15 @@ app.get('/read-text/:filename', async (req, res) => {
 
   // Spawn a new Python process
   const pythonProcess = spawnSync('python', [pythonScript, ...pythonArgs]);
-
+  console.log(pythonProcess)
   // Listen for data from the Python process (stdout and stderr)
   if (pythonProcess.status === 0) {
     // Execution completed successfully
     console.log('Python script executed successfully');
 
     text = pythonProcess.stdout.toString()
-  } else {
+  }
+   else {
     // Execution failed
     console.error('Error executing Python script');
     console.error('stderr:', pythonProcess.stderr.toString());
