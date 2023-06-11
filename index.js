@@ -72,10 +72,10 @@ app.get('/read-text/:filename', async (req, res) => {
 
   let text
   // Path to your Python script
-  const pythonScript = __dirname+'\\balloon.py';
+  const pythonScript = __dirname+'/balloon.py';
 
 
-  const pythonArgs = [ __dirname+'\\balloon.py\\'+ req.params.filename];
+  const pythonArgs = [ __dirname+'/balloon.py/'+ req.params.filename];
 
   // Spawn a new Python process
   const pythonProcess = spawnSync('python', [pythonScript, ...pythonArgs]);
