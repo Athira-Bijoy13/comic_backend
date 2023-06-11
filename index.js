@@ -78,7 +78,7 @@ app.get('/read-text/:filename', async (req, res) => {
   const pythonArgs = [ __dirname+'/balloon.py/'+ req.params.filename];
 
   // Spawn a new Python process
-  const pythonProcess = spawnSync('python', [pythonScript, ...pythonArgs]);
+  const pythonProcess = spawnSync('python', [pythonScript]);
   console.log(pythonProcess)
   // Listen for data from the Python process (stdout and stderr)
   if (pythonProcess.status === 0) {
