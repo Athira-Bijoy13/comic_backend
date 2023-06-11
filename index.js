@@ -72,10 +72,10 @@ app.get('/read-text/:filename', async (req, res) => {
 
   let text
   // Path to your Python script
-  const pythonScript = './balloon.py';
+  const pythonScript = __dirname+'\\balloon.py';
 
 
-  const pythonArgs = ['./images/' + req.params.filename];
+  const pythonArgs = [ __dirname+'\\balloon.py\\'+ req.params.filename];
 
   // Spawn a new Python process
   const pythonProcess = spawnSync('python', [pythonScript, ...pythonArgs]);
@@ -133,6 +133,6 @@ app.get('/read-text/:filename', async (req, res) => {
 
 app.listen(port, async () => {
 
-  console.log("running on port " + port);
+  console.log("running on port " + __dirname+'\\balloon.py');
 
 })
