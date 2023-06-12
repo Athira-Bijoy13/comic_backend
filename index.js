@@ -5,7 +5,7 @@ const multer = require('multer')
 const Tesseract = require('tesseract.js')
 const gTTS = require('gtts');
 var player = require('play-sound')(opts = {})
-const { spawnSync } = require('child_process');
+const { spawn } = require('child_process');
 const sound = require('sound-play');
 const { log } = require('console');
 const fs = require('fs')
@@ -37,8 +37,12 @@ app.get("/",(req,res)=>{
 })
 app.get("/test",(req,res)=>{
   const pythonScript = __dirname+'/balloon.py';
-  const pythonProcess = spawnSync('python', [pythonScript]);
-  console.log(pythonProcess.stdout.toString())
+  const pythonProcess = spawn('python', [pythonScript]);
+  pythonProcess.stdout.on('data', function (data) {
+    console.log('Pipe data from python script ...',data.toString());
+    dataToSend = data.toString();
+   });
+  
   // PythonShell.runString('x=1+1;print(x)', null).then(messages=>{
   //   console.log('finished',messages);
   // });
