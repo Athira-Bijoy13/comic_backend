@@ -1,11 +1,13 @@
+import sys
 print('hyy')
+sys.stdout.flush()
 # import cv2
 # import enchant
 # import numpy
 # import os
 # import pytesseract
 # import re
-# import sys
+
 # from autocorrect import Speller
 # from PIL import Image
 
