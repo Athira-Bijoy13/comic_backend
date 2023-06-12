@@ -9,6 +9,7 @@ const { spawnSync } = require('child_process');
 const sound = require('sound-play');
 const { log } = require('console');
 const fs = require('fs')
+const {PythonShell} = require('python-shell')
 const app = express();
 const port = 8800;
 
@@ -33,6 +34,11 @@ const upload = multer({
 app.use(cors())
 app.get("/",(req,res)=>{
   res.send("hy")
+})
+app.get("/test",(req,res)=>{
+  PythonShell.runString('x=1+1;print(x)', null).then(messages=>{
+    console.log('finished',messages);
+  });
 })
 app.post('/upload', upload.single('image'), async (req, res) => {
 
