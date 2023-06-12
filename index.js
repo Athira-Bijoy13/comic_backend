@@ -36,9 +36,11 @@ app.get("/",(req,res)=>{
   res.send("hy")
 })
 app.get("/test",(req,res)=>{
-  PythonShell.runString('x=1+1;print(x)', null).then(messages=>{
-    console.log('finished',messages);
-  });
+  const pythonProcess = spawnSync('python3', [pythonScript]);
+  console.log(pythonProcess)
+  // PythonShell.runString('x=1+1;print(x)', null).then(messages=>{
+  //   console.log('finished',messages);
+  // });
 })
 app.post('/upload', upload.single('image'), async (req, res) => {
 
@@ -84,7 +86,7 @@ app.get('/read-text/:filename', async (req, res) => {
   const pythonArgs = [ __dirname+'/balloon.py/'+ req.params.filename];
 
   // Spawn a new Python process
-  const pythonProcess = spawnSync('python', [pythonScript]);
+  const pythonProcess = spawnSync('python3', [pythonScript]);
   console.log(pythonProcess)
   // Listen for data from the Python process (stdout and stderr)
   if (pythonProcess.status === 0) {
