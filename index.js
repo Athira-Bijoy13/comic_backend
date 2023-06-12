@@ -37,7 +37,7 @@ app.get("/",(req,res)=>{
 })
 app.get("/test",(req,res)=>{
   const pythonScript = __dirname+'/balloon.py';
-  const pythonProcess = spawnSync('python3', [pythonScript]);
+  const pythonProcess = spawnSync('python', [pythonScript]);
   console.log(pythonProcess)
   // PythonShell.runString('x=1+1;print(x)', null).then(messages=>{
   //   console.log('finished',messages);
