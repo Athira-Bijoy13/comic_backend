@@ -38,7 +38,7 @@ app.get("/",(req,res)=>{
 app.get("/test",(req,res)=>{
   const pythonScript = __dirname+'/balloon.py';
   const pythonProcess = spawn('python', [pythonScript]);
-  pythonProcess.stdout.on('data', function (data) {
+  pythonProcess.stdout.on('data from', function (data) {
     console.log('Pipe data from python script ...',data.toString());
     dataToSend = data.toString();
    });
