@@ -35,6 +35,7 @@ app.use(cors())
 app.get("/",(req,res)=>{
   res.send("hy")
 })
+
 app.get("/test1",(req,res)=>{
   const pythonScript = __dirname+'/balloon.py';
   const pythonProcess = spawn('python', [pythonScript]);
@@ -42,6 +43,8 @@ app.get("/test1",(req,res)=>{
     console.log('Pipe data from python script ...',data.toString());
     dataToSend = data.toString();
    });
+  
+})
 
 app.get("/test",(req,res)=>{
   const pythonScript = __dirname+'/balloon.py';
