@@ -12,6 +12,7 @@
   "dependencies": {
     "audic": "^3.0.2",
     "autocorrect": "^1.2.0",
+    "axios": "^1.4.0",
     "canvas": "^2.11.2",
     "cors": "^2.8.5",
     "enchant": "^0.3.1",

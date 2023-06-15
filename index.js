@@ -5,11 +5,12 @@ const multer = require('multer')
 const Tesseract = require('tesseract.js')
 const gTTS = require('gtts');
 var player = require('play-sound')(opts = {})
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const sound = require('sound-play');
 const { log } = require('console');
 const fs = require('fs')
 const {PythonShell} = require('python-shell')
+const axios=require('axios');
 const app = express();
 const port = 8800;
 
@@ -22,7 +23,6 @@ const storage = multer.diskStorage({
     req.filename = Date.now() + '-' + file.originalname
     cb(null, Date.now() + '-' + file.originalname)
   }
-
 })
 let file1
 const upload = multer({
@@ -48,7 +48,7 @@ app.get("/test1",(req,res)=>{
 
 app.get("/test",(req,res)=>{
   const pythonScript = __dirname+'/balloon.py';
-  const pythonProcess = spawn('python', [pythonScript]);
+  const pythonProcess = spawnSync('python', [pythonScript]);
   pythonProcess.stdout.on('data from', function (data) {
     console.log('Pipe data from python script ...',data.toString());
     dataToSend = data.toString();
@@ -96,26 +96,31 @@ app.get('/read-text/:filename', async (req, res) => {
 
   let text
   // Path to your Python script
-  const pythonScript = __dirname+'/balloon.py';
+  const pythonScript = './balloon.py';
 
 
-  const pythonArgs = [ __dirname+'/balloon.py/'+ req.params.filename];
+  const pythonArgs =__dirname+'\\images\\' + req.params.filename;
 
+  const res1=await axios.get(`https://image-to-audio-python.vercel.app/convert-text?name=${pythonArgs}`)
+  console.log(res1.data)
+  text=res1.data
+  // .then(res => text=res.data)
+  // .catch(err => console.log(err)
   // Spawn a new Python process
-  const pythonProcess = spawnSync('python3', [pythonScript]);
-  console.log(pythonProcess)
-  // Listen for data from the Python process (stdout and stderr)
-  if (pythonProcess.status === 0) {
-    // Execution completed successfully
-    console.log('Python script executed successfully');
+  // const pythonProcess = spawnSync('python', [pythonScript, ...pythonArgs]);
+  // console.log(pythonProcess)
+  // // Listen for data from the Python process (stdout and stderr)
+  // if (pythonProcess.status === 0) {
+  //   // Execution completed successfully
+  //   console.log('Python script executed successfully');
 
-    text = pythonProcess.stdout.toString()
-  }
-   else {
-    // Execution failed
-    console.error('Error executing Python script');
-    console.error('stderr:', pythonProcess.stderr.toString());
-  }
+  //   text = pythonProcess.stdout.toString()
+  // }
+  //  else {
+  //   // Execution failed
+  //   console.error('Error executing Python script');
+  //   console.error('stderr:', pythonProcess.stderr.toString());
+  // }
 
   // Listen for the Python process to exit
   // await pythonProcess.on('close', (code) => {
@@ -157,6 +162,6 @@ app.get('/read-text/:filename', async (req, res) => {
 
 app.listen(port, async () => {
 
-  console.log("running on port " + __dirname+'\\balloon.py');
+  console.log("running on port " +__dirname+'\\images\\' + 'r');
 
 })
