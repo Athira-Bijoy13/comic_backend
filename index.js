@@ -17,7 +17,7 @@ const port = 8800;
 app.use(express.json())
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'images/')
+    cb(null, __dirname)
   },
   filename: function (req, file, cb) {
     req.filename = Date.now() + '-' + file.originalname
