@@ -1,3 +1,4 @@
+require('./db')
 const express = require('express');
 const cors = require('cors')
 const path = require('path')
@@ -11,6 +12,8 @@ const { log } = require('console');
 const fs = require('fs')
 const {PythonShell} = require('python-shell')
 const axios=require('axios');
+const Carousel = require('./imagemodel');
+const sharp=require("sharp")
 const app = express();
 const port = 8800;
 
@@ -25,12 +28,7 @@ const storage = multer.diskStorage({
   }
 })
 let file1
-const upload = multer({
-  storage: storage,
-
-
-
-})
+const upload = multer({})
 app.use(cors())
 app.get("/",(req,res)=>{
   res.send("hy")
@@ -70,94 +68,75 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 
 
 })
-
-app.get('/read-text/:filename', async (req, res) => {
-
-
-
-  // const worker = await Tesseract.createWorker({
-  //   lang: ['eng','fin'],
-  //   oem: 1,     
-  //   psm: 9,
-  //   tessedit_char_whitelist: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
-
-  // });
-
-  // await worker.load();
-  // await worker.loadLanguage('eng');
-  // await worker.initialize('eng');
-  // const image = 'D:/College of Engineering Trivandrum/interships/book/r.png'
-  // // await worker.setParameters({
-  // //   tessedit_char_whitelist: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
-  // // });
-  // const { data: { text } } =  await worker.recognize(image);
-  // console.log(text);
-
-
-  let text
-  // Path to your Python script
-  const pythonScript = './balloon.py';
-
-
-  const pythonArgs =__dirname+'\\images\\' + req.params.filename;
-
-  const res1=await axios.get(`https://image-to-audio-python.vercel.app/convert-text?name=${pythonArgs}`)
-  console.log(res1.data)
-  text=res1.data
-  // .then(res => text=res.data)
-  // .catch(err => console.log(err)
-  // Spawn a new Python process
-  // const pythonProcess = spawnSync('python', [pythonScript, ...pythonArgs]);
-  // console.log(pythonProcess)
-  // // Listen for data from the Python process (stdout and stderr)
-  // if (pythonProcess.status === 0) {
-  //   // Execution completed successfully
-  //   console.log('Python script executed successfully');
-
-  //   text = pythonProcess.stdout.toString()
-  // }
-  //  else {
-  //   // Execution failed
-  //   console.error('Error executing Python script');
-  //   console.error('stderr:', pythonProcess.stderr.toString());
-  // }
-
-  // Listen for the Python process to exit
-  // await pythonProcess.on('close', (code) => {
-  //   console.log(`Python process exited with code ${code}`);
-  // });
-  let speechtext = ''
-  let j = 0;
-  for (let i = 0; i < text.length; i++) {
-    if (text[i] != '\'')
-      speechtext = speechtext.concat(text[i])
-  }
-
-  console.log(speechtext);
-  let speech = 'Text to speech converted!';
-  const gtts = new gTTS(speechtext, 'en');
-
-
-  const voice = './audio/' + req.params.filename + '.mp3'
-  let Output
-  gtts.save(voice, function (err, result1) {
-    if (err) { throw new Error(err); }
-    console.log("huaia");
-
-    const result = "data:audio/ogg;base64," + fs.readFileSync('./audio/' + req.params.filename + '.mp3', 'base64').toString("base64");
-
-
-
-
-    res.send({
-      status: 'ok',
-      data: result
-    });
-    // });
-
+app.get("/image/:id", async (req, res) => {
+    try {
+      const _id = req.params.id;
+      const carousel = await Carousel.findById(_id);
+  
+      if (!carousel) {
+        throw new Error("Carousel image not found");
+      }
+      res.set("Content-Type", "image/png");
+      res.status(200).send(carousel.carouselImage);
+    } catch (e) {
+      res.status(400).send({
+        status:"failed",
+        msg: e.message,
+      });
+    }
   });
-  //  await sound.play('Voice.mp3')
 
+app.post('/read-text', upload.single('image'),async (req, res) => {
+
+    try {
+        const carousel=new Carousel();
+        const buffer=await sharp(req.file.buffer).resize({width:600,height:300}).png().toBuffer();
+        carousel.carouselImage=buffer;
+            await carousel.save();
+            console.log({
+                status:'ok',
+                msg:'carousel added',
+                data: "http://localhost:8800/image/"+carousel._id,
+              });
+              let text
+              const pyurl="http://127.0.0.1:5000"
+              //https://image-to-audio-python.vercel.app
+              const res1=await axios.get(`${pyurl}/convert-text?name=http://localhost:8800/image/${carousel._id}`)
+              console.log(res1.data.data)
+              text=res1.data.data
+              let speechtext = ''
+              let j = 0;
+              for (let i = 0; i < text.length; i++) {
+                if (text[i] != '\'')
+                  speechtext = speechtext.concat(text[i])
+              }
+            
+              console.log(speechtext);
+              let speech = 'Text to speech converted!';
+              const gtts = new gTTS(speechtext, 'en');
+            
+            
+              const voice = './audio/' + req.params.filename + '.mp3'
+              let Output
+              gtts.save(voice, function (err, result1) {
+                if (err) { throw new Error(err); }
+                console.log("huaia");
+                const result = "data:audio/ogg;base64," + fs.readFileSync('./audio/' + req.params.filename + '.mp3', 'base64').toString("base64");
+                res.send({
+                  status: 'ok',
+                  data: result
+                });
+                // });
+            
+              });
+    } catch (e) {
+        res.status(400).send({
+            status:'failed',
+          msg: e.message,
+        });
+    }
+
+  
 })
 
 app.listen(port, async () => {
