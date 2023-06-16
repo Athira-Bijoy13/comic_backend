@@ -23,7 +23,6 @@
     "node-tesseract-ocr": "^2.2.1",
     "play-sound": "^1.1.5",
     "python-shell": "^5.0.0",
-    "sharp": "^0.32.1",
     "sound-play": "^1.1.0",
     "tesseract.js": "^4.0.5",
     "text-from-image": "^1.1.1"
