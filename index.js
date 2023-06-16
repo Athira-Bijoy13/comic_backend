@@ -15,7 +15,7 @@ const axios=require('axios');
 const Carousel = require('./imagemodel');
 const app = express();
 const port = 8800;
-
+const {sharp}=require('sharp')
 app.use(express.json())
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -126,6 +126,7 @@ app.post('/read-text', upload.single('image'),async (req, res) => {
                   status: 'ok',
                   data: result
                 });
+                
                 // });
             
               });
