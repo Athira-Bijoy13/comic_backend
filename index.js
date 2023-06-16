@@ -99,7 +99,7 @@ app.post('/read-text', upload.single('image'),async (req, res) => {
                 data: "http://localhost:8800/image/"+carousel._id,
               });
               let text
-              const pyurl=false?"http://127.0.0.1:5000":"https://image-to-audio-python.vercel.app/"
+              const pyurl=false?"http://127.0.0.1:5000":"https://image-to-audio-python.vercel.app"
               //https://image-to-audio-python.vercel.app
               const res1=await axios.get(`${pyurl}/convert-text?name=${hosturl}/image/${carousel._id}`)
               console.log(res1.data.data)
