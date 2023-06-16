@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
   }
 })
 let file1
+const hosturl=true?"https://comic-backend.vercel.app":"http://localhost:8800"
 const upload = multer({})
 app.use(cors())
 app.get("/",(req,res)=>{
@@ -98,9 +99,9 @@ app.post('/read-text', upload.single('image'),async (req, res) => {
                 data: "http://localhost:8800/image/"+carousel._id,
               });
               let text
-              const pyurl="http://127.0.0.1:5000"
+              const pyurl=false?"http://127.0.0.1:5000":"https://image-to-audio-python.vercel.app/"
               //https://image-to-audio-python.vercel.app
-              const res1=await axios.get(`${pyurl}/convert-text?name=http://localhost:8800/image/${carousel._id}`)
+              const res1=await axios.get(`${pyurl}/convert-text?name=${hosturl}/image/${carousel._id}`)
               console.log(res1.data.data)
               text=res1.data.data
               let speechtext = ''
