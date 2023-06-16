@@ -13,7 +13,6 @@ const fs = require('fs')
 const {PythonShell} = require('python-shell')
 const axios=require('axios');
 const Carousel = require('./imagemodel');
-const sharp=require("sharp")
 const app = express();
 const port = 8800;
 
@@ -90,7 +89,7 @@ app.post('/read-text', upload.single('image'),async (req, res) => {
 
     try {
         const carousel=new Carousel();
-        const buffer=await sharp(req.file.buffer).resize({width:600,height:300}).png().toBuffer();
+        const buffer=req.file.buffer;
         carousel.carouselImage=buffer;
             await carousel.save();
             console.log({
